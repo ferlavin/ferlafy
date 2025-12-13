@@ -12,7 +12,18 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+// Configuración de CORS para producción
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://ferlafy.vercel.app'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/songs', songsRoutes);
