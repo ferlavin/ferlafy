@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "fermin",
+    "email": "ferlavin2019@gmail.com",
+    "message": "asheee",
+    "date": "2025-11-04T20:10:18.494Z",
+    "read": true
+  },
+  {
+    "id": 2,
+    "name": "fermin",
+    "email": "ferlavin2019@gmail.com",
+    "message": "boca de mi vidaa",
+    "date": "2025-12-13T18:45:35.467Z",
+    "read": false
+  }
+]
