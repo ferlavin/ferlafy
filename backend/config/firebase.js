@@ -4,11 +4,15 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Initialize Firebase Admin SDK
-// Try to use FIREBASE_CONFIG_JSON first (entire config as JSON), otherwise use individual env vars
+// Support base64 encoded config or JSON string
 let serviceAccount;
 
-if (process.env.FIREBASE_CONFIG_JSON) {
-  // If full config is provided as JSON string
+if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
+  // Decode base64 config
+  const configJson = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf-8');
+  serviceAccount = JSON.parse(configJson);
+} else if (process.env.FIREBASE_CONFIG_JSON) {
+  // Parse JSON string directly
   serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG_JSON);
 } else {
   // Build from individual env vars
@@ -40,3 +44,4 @@ export const auth = admin.auth();
 export const db = admin.firestore();
 
 export default admin;
+  
