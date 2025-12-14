@@ -22,6 +22,20 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT) {
   }
 }
 
+// Try to load from secret file path provided by env (Render Secret Files)
+if (!serviceAccount && process.env.FIREBASE_SERVICE_ACCOUNT_FILE) {
+  try {
+    const filePath = process.env.FIREBASE_SERVICE_ACCOUNT_FILE;
+    if (fs.existsSync(filePath)) {
+      serviceAccount = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    } else {
+      console.error('FIREBASE_SERVICE_ACCOUNT_FILE not found at path:', filePath);
+    }
+  } catch (e) {
+    console.error('Failed to load FIREBASE_SERVICE_ACCOUNT_FILE:', e.message);
+  }
+}
+
 // Try to load from local file (for development or if provided via volume in production)
 if (!serviceAccount) {
   const keyPath = path.join(__dirname, '../serviceAccountKey.json');
