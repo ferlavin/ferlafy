@@ -13,19 +13,25 @@ const __dirname = path.dirname(__filename);
 // Initialize Firebase Admin SDK
 let serviceAccount;
 
-// Try to load from local file first (for development or if provided via volume in production)
-const keyPath = path.join(__dirname, '../serviceAccountKey.json');
-if (fs.existsSync(keyPath)) {
-  serviceAccount = JSON.parse(fs.readFileSync(keyPath, 'utf8'));
-} else if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
-  // Decode base64 config
-  const configJson = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf-8');
-  serviceAccount = JSON.parse(configJson);
-} else if (process.env.FIREBASE_CONFIG_JSON) {
-  // Parse JSON string directly
-  serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG_JSON);
-} else {
-  // Build from individual env vars (fallback)
+// Try environment variable with JSON first
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  try {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } catch (e) {
+    console.error('Failed to parse FIREBASE_SERVICE_ACCOUNT env var:', e.message);
+  }
+}
+
+// Try to load from local file (for development or if provided via volume in production)
+if (!serviceAccount) {
+  const keyPath = path.join(__dirname, '../serviceAccountKey.json');
+  if (fs.existsSync(keyPath)) {
+    serviceAccount = JSON.parse(fs.readFileSync(keyPath, 'utf8'));
+  }
+}
+
+// Fallback to individual env vars
+if (!serviceAccount) {
   const privateKey = process.env.FIREBASE_PRIVATE_KEY 
     ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/\\"/g, '"')
     : '';
