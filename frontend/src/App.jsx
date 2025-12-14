@@ -17,6 +17,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Playlists from './pages/Playlists';
 import PlaylistDetail from './pages/PlaylistDetail';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
 function App() {
   const [currentSong, setCurrentSong] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -44,7 +46,7 @@ function App() {
             localStorage.setItem('token', token);
             
             // Verificar con el backend
-            const response = await fetch('http://localhost:3000/api/auth/verify', {
+            const response = await fetch(`${API_BASE_URL}/auth/verify`, {
               headers: {
                 'Authorization': `Bearer ${token}`
               }
