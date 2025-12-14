@@ -14,11 +14,24 @@ const PORT = process.env.PORT || 3000;
 
 // Configuración de CORS para producción
 const corsOptions = {
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'https://ferlafy.vercel.app'
-  ],
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'https://ferlafy.vercel.app'
+    ];
+    
+    // Permitir cualquier URL de preview de Vercel (*.vercel.app)
+    if (origin && origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
+    
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    callback(null, false);
+  },
   credentials: true,
   optionsSuccessStatus: 200
 };
