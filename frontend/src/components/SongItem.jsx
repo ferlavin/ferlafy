@@ -44,7 +44,8 @@ function SongItem({ song, onClick, isActive, onDelete }) {
     setDeleting(true);
     
     try {
-      const response = await fetch(`http://localhost:3000/api/songs/${song.id}`, {
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+      const response = await fetch(`${baseUrl}/songs/${song.id}`, {
         method: 'DELETE'
       });
 

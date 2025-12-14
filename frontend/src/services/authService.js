@@ -39,7 +39,7 @@ export const authService = {
       const idToken = await userCredential.user.getIdToken();
       
       // 3. Llamar backend para guardar datos adicionales en Firestore
-      const response = await fetch('http://localhost:3000/api/auth/register', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ export const authService = {
       const idToken = await userCredential.user.getIdToken();
       
       // 3. Obtener datos adicionales del usuario desde backend/Firestore
-      const response = await fetch('http://localhost:3000/api/auth/me', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/auth/me`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${idToken}`
