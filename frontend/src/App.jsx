@@ -82,7 +82,7 @@ function App() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetch('http://localhost:3000/api/songs')
+      fetch(`${API_BASE_URL}/songs`)
         .then(res => res.json())
         .then(data => {
           setSongs(data);
