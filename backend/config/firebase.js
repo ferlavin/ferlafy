@@ -1,13 +1,23 @@
 import admin from 'firebase-admin';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Initialize Firebase Admin SDK
-// Support base64 encoded config or JSON string
 let serviceAccount;
 
-if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
+// Try to load from local file first (for development or if provided via volume in production)
+const keyPath = path.join(__dirname, '../serviceAccountKey.json');
+if (fs.existsSync(keyPath)) {
+  serviceAccount = JSON.parse(fs.readFileSync(keyPath, 'utf8'));
+} else if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
   // Decode base64 config
   const configJson = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf-8');
   serviceAccount = JSON.parse(configJson);
@@ -15,7 +25,7 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
   // Parse JSON string directly
   serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG_JSON);
 } else {
-  // Build from individual env vars
+  // Build from individual env vars (fallback)
   const privateKey = process.env.FIREBASE_PRIVATE_KEY 
     ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/\\"/g, '"')
     : '';
